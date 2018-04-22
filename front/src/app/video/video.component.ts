@@ -15,21 +15,20 @@ export class VideoComponent {
   @Input() set video(video: Video) {
     this._video = video;
     this.url = video.attachment.url + '?api-token=' + this.token;
-    this.onVideoSet();
-    
+    this.videoRef.nativeElement.onload = () => {
+      this.onVideoLoad();
+    };
   }
   
   url: string;
   
   private _video: Video;
   
-  
   constructor(private videoStatsService: VideoStatsService) { }
   
-  private onVideoSet() {
-    this.videoRef.nativeElement.onload = () => {
+  private onVideoLoad() {
+    
       this.videoStatsService.videoDuration(this.videoRef.nativeElement.duration, this.video.id);
-    }
     
     //
     // this.videoStatsService.videoDuration(this.videoRef.nativeElement.duration, this.video.id);
