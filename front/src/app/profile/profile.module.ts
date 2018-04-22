@@ -9,6 +9,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {NgUploaderModule} from 'ngx-uploader';
 import {VideosService} from './videos.service';
 import { VideoViewComponent } from './video-view/video-view.component';
+import {VideoModule} from '../video/video.module';
 
 const routes: Routes = [
   {
@@ -42,6 +43,8 @@ const routes: Routes = [
     MatIconModule,
     NgUploaderModule,
     MatProgressBarModule,
+    
+    VideoModule,
   ],
   declarations: [ProfileComponent, VideosComponent, VideosCreateComponent, VideoViewComponent],
   providers: [VideosService],

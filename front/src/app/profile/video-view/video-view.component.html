@@ -1,3 +1,1 @@
-<video *ngIf="video" controls >
-  <source [src]="video.attachment.url + '?api-token=' + token" type="video/mp4">
-</video>
+<app-video *ngIf="video" [video]="video" [token]="token" ></app-video>

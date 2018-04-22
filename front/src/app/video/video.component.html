@@ -1,0 +1,5 @@
+{{ video.attachment.url | json }}
+
+<video *ngIf="video" #video controls >
+  <source [src]="video.attachment.url + '?api-token=' + token" type="video/mp4">
+</video>
