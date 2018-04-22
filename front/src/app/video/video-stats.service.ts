@@ -18,7 +18,7 @@ export class VideoStatsService {
       video.duration = duration;
     }
     
-    localStorage.setItem('stats.videos', videos);
+    this.localStorage.put('stats.videos', videos);
   }
   
   start(position: number, videoId: number) {

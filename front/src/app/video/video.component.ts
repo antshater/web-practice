@@ -7,16 +7,30 @@ import {VideoStatsService} from "./video-stats.service";
   templateUrl: './video.component.html',
   styleUrls: ['./video.component.css']
 })
-export class VideoComponent implements OnInit {
+export class VideoComponent {
 
   @ViewChild('video') videoRef: ElementRef;
   
   @Input() token: string;
-  @Input() video: Video;
+  @Input() set video(video: Video) {
+    this._video = video;
+    this.url = video.attachment.url + '?api-token=' + this.token;
+    this.onVideoSet();
+    
+  }
+  
+  url: string;
+  
+  private _video: Video;
+  
   
   constructor(private videoStatsService: VideoStatsService) { }
-
-  ngOnInit() {
+  
+  private onVideoSet() {
+    this.videoRef.nativeElement.onload = () => {
+      this.videoStatsService.videoDuration(this.videoRef.nativeElement.duration, this.video.id);
+    }
+    
     //
     // this.videoStatsService.videoDuration(this.videoRef.nativeElement.duration, this.video.id);
     // this.videoRef.nativeElement.onplaying = (event) => {
@@ -36,4 +50,7 @@ export class VideoComponent implements OnInit {
     // };
   }
 
+  get video() {
+    return this._video;
+  }
 }
