@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 
 use App\Attachment;
-use App\Http\Requests\VideosStoreRequest;
+use App\Http\Requests\VideosSaveRequest;
 use App\Http\Resources\VideoFullResource;
 use App\Http\Resources\VideoResource;
 use App\Video;
@@ -18,7 +18,27 @@ class UserVideosController extends Controller
         return VideoResource::collection(Auth::user()->videos);
     }
 
-    public function store(VideosStoreRequest $request)
+    private function saveVideo(VideosSaveRequest $request, Video $video)
+    {
+        $video->fill($request->only(['title', 'description']));
+        if ($request->filled('attachment_id')) {
+            $attachment = Attachment::findOrFail($request->input('attachment_id'));
+            $video->attachment()->save($attachment);
+        }
+
+        if ($request->filled('preview_id')) {
+            $preview = Attachment::findOrFail($request->input('preview_id'));
+            $video->preview()->associate($preview);
+        }
+
+        $video->save();
+
+        $video->load(['attachment', 'preview']);
+
+        return new VideoResource($video);
+    }
+
+    public function store(VideosSaveRequest $request)
     {
         /** @var Video $video */
         $video = Auth::user()->videos()->create($request->only([
@@ -26,17 +46,11 @@ class UserVideosController extends Controller
             'description',
         ]));
 
-        if ($request->filled('attachment_id')) {
-            $attachment = Attachment::findOrFail($request->input('attachment_id'));
-            $video->attachment()->save($attachment);
-        }
-
-        return new VideoResource($video);
-
+        return $this->saveVideo($request, $video);
     }
 
-    public function update()
+    public function update(VideosSaveRequest $request, Video $video)
     {
-        //
+        return $this->saveVideo($request, $video);
     }
 }
